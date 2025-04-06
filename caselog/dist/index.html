@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CaseLog</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Ensure responsiveness on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CaseLog - Shipment Problem Cases</title>
+  <!-- Google Font: Cairo -->
+  <link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light Theme Variables */
+      --bg-color: #fff;
+      --text-color: #333;
+      --accent-color: #ff6900;
+      --box-bg: #fff;
+      --box-border: #eee;
+      --hover-bg: #f9f9f9;
+      --status-green: #2ecc71;
+      --status-orange: #ff6900;
+      --status-red: #dc3545;
+      --header-bg: #ff6900;
+      --header-text-color: #fff;
+      --switch-bg: #ddd;
+      --switch-handle-bg: #fff;
+      --btn-hover-bg: #e05f00;
+    }
+    body.dark-theme {
+      /* Dark Theme Overrides */
+      --bg-color: #1a1a1a;
+      --text-color: #fff;
+      --box-bg: #2a2a2a;
+      --box-border: #444;
+      --hover-bg: #333;
+      --header-bg: #111;
+      --header-text-color: #ff6900;
+      --switch-bg: #444;
+      --switch-handle-bg: #ff6900;
+      --btn-hover-bg: #c23f00;
+    }
+    /* Global Reset & Font */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    /* Fixed Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--header-bg);
+      color: var(--header-text-color);
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+    .top-bar-left,
+    .top-bar-center,
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+    }
+    .top-bar-left {
+      gap: 20px;
+    }
+    .top-bar-center {
+      flex-grow: 1;
+      justify-content: center;
+    }
+    .top-bar-right {
+      gap: 20px;
+    }
+    /* App Name with Light Static Glow */
+    .app-name {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color);
+    }
+    /* Theme Switch */
+    .theme-switch {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .theme-switch label {
+      margin-right: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .theme-switch input[type="checkbox"] {
+      width: 40px;
+      height: 20px;
+      appearance: none;
+      background: var(--switch-bg);
+      border-radius: 20px;
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .theme-switch input[type="checkbox"]::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--switch-handle-bg);
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+    .theme-switch input[type="checkbox"]:checked::before {
+      transform: translateX(20px);
+    }
+    /* Top Bar Logo */
+    .top-bar-logo img {
+      height: 60px;
+      object-fit: contain;
+    }
+    /* Buttons in Top Bar */
+    .top-bar-button {
+      background: #fff;
+      color: var(--accent-color);
+      border: none;
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .top-bar-button:hover {
+      background: #f2f2f2;
+    }
+    /* Container */
+    .container {
+      /* Removed max-width to avoid horizontal scroll */
+      width: auto;
+      margin: 100px 20px 20px; /* Added top margin for fixed bar */
+    }
+    /* Sections */
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    /* Add Case Form */
+    .add-case-form {
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .add-case-form:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .add-case-form h2 {
+      margin-bottom: 15px;
+      color: var(--accent-color);
+      font-size: 1.2rem;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .form-row label {
+      width: 130px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    .form-row input,
+    .form-row textarea {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      transition: border 0.3s ease;
+      background: transparent;
+      color: inherit;
+    }
+    .form-row input:focus,
+    .form-row textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .add-case-form button {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    .add-case-form button:hover {
+      background: var(--btn-hover-bg);
+    }
+    /* Case List */
+    .case-list {
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+      /* Removed overflow to allow table to expand */
+    }
+    .case-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--hover-bg);
+      border-bottom: 1px solid var(--box-border);
+      padding: 15px 20px;
+    }
+    .case-list-header h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+    .case-list-header div {
+      font-size: 0.95rem;
+      color: var(--text-color);
+    }
+    .case-list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .case-list-table thead {
+      background: var(--hover-bg);
+    }
+    .case-list-table th,
+    .case-list-table td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--box-border);
+    }
+    .case-list-table tbody tr:hover {
+      background: var(--hover-bg);
+    }
+    /* Status Indicator */
+    .status-indicator {
+      font-weight: 600;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .status-green { background: var(--status-green); }
+    .status-orange { background: var(--status-orange); }
+    .status-red { background: var(--status-red); }
+    /* Action Buttons */
+    .btn {
+      padding: 7px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-right: 5px;
+      transition: background 0.3s ease;
+      position: relative;
+    }
+    .btn-view {
+      background: var(--accent-color);
+      color: #fff;
+    }
+    .btn-view:hover {
+      background: var(--btn-hover-bg);
+    }
+    .btn-edit {
+      background: #007bff;
+      color: #fff;
+    }
+    .btn-edit:hover {
+      background: #0056b3;
+    }
+    /* "Updates" Popup */
+    .view-btn-container {
+      position: relative;
+      display: inline-block;
+    }
+    .updates-popup {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      width: 250px;
+      padding: 10px;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
+    }
+    .updates-popup.show {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .updates-popup h4 {
+      margin-bottom: 8px;
+      color: var(--accent-color);
+      font-size: 0.95rem;
+      position: relative;
+      padding-right: 20px;
+    }
+    .updates-popup p {
+      font-size: 0.85rem;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+      color: var(--text-color);
+    }
+    .popup-close-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      color: var(--accent-color);
+      cursor: pointer;
+    }
+    /* EDIT MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+    .edit-modal {
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 8px;
+      width: 600px;
+      max-width: 90%;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.4s forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .edit-modal h2 {
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+    .close-edit-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ccc;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .close-edit-modal:hover {
+      background: #bbb;
+    }
+    .edit-form-row {
+      display: flex;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    .edit-form-row label {
+      width: 130px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    .edit-form-row input,
+    .edit-form-row textarea {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: transparent;
+      color: inherit;
+      transition: border 0.3s ease;
+    }
+    .edit-form-row input:focus,
+    .edit-form-row textarea:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .save-changes-btn,
+    .cancel-changes-btn {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+    .save-changes-btn:hover,
+    .cancel-changes-btn:hover {
+      background: var(--btn-hover-bg);
+    }
+    /* Checkbox to close case in edit modal */
+    .edit-close-checkbox {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .edit-close-checkbox input[type="checkbox"] {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    /* Edit Modal - Updates Section */
+    .edit-updates-section {
+      margin-top: 20px;
+      border-top: 1px solid var(--box-border);
+      padding-top: 15px;
+    }
+    .edit-updates-section h3 {
+      margin-bottom: 10px;
+      color: var(--accent-color);
+      font-size: 1rem;
+    }
+    .edit-updates-list {
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background: var(--hover-bg);
+      margin-bottom: 10px;
+    }
+    .edit-updates-list p {
+      font-size: 0.85rem;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+    }
+    .add-update-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .add-update-row input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: transparent;
+      color: inherit;
+      transition: border 0.3s ease;
+    }
+    .add-update-row input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    .add-update-btn {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .add-update-btn:hover {
+      background: var(--btn-hover-bg);
+    }
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-direction: column;
+      }
+      .top-bar-left, .top-bar-center, .top-bar-right {
+        width: 100%;
+        text-align: center;
+        margin: 5px 0;
+      }
+      .container {
+        margin-top: 120px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .case-list-table th,
+      .case-list-table td {
+        padding: 8px 10px;
+      }
+      .app-name {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="theme-switch">
+        <label for="themeToggle">Theme:</label>
+        <input type="checkbox" id="themeToggle" />
+      </div>
+    </div>
+    <div class="top-bar-center">
+      <span class="app-name">CaseLog</span>
+    </div>
+    <div class="top-bar-right">
+      <button class="top-bar-button" id="openCasesBtn">Open Cases</button>
+      <button class="top-bar-button" id="closeCasesBtn">Close Cases</button>
+      <div class="top-bar-logo">
+        <img src="https://gerizimpo.com/wp-content/uploads/2024/12/logo-black.webp" alt="Gerizim Logo" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Open Cases Section -->
+    <div class="section active" id="openCasesSection">
+      <!-- Add Case Form -->
+      <div class="add-case-form">
+        <h2>Add New Case</h2>
+        <div class="form-row">
+          <label for="customerName">Customer Name:</label>
+          <input type="text" id="customerName" required />
+        </div>
+        <div class="form-row">
+          <label for="phoneNumber">Phone Number:</label>
+          <input type="text" id="phoneNumber" required />
+        </div>
+        <div class="form-row">
+          <label for="shippingCompany">Company:</label>
+          <input type="text" id="shippingCompany" required />
+        </div>
+        <div class="form-row">
+          <label for="trackingNumber">Tracking #:</label>
+          <input type="text" id="trackingNumber" required />
+        </div>
+        <div class="form-row">
+          <label for="notes">Notes:</label>
+          <textarea id="notes" rows="2" placeholder="Enter any notes here..."></textarea>
+        </div>
+        <button id="addCaseBtn">Add Case</button>
+      </div>
+
+      <!-- Case List -->
+      <div class="case-list">
+        <div class="case-list-header">
+          <h2>Open Cases</h2>
+          <div>Total Cases: <span id="totalCases">0</span></div>
+        </div>
+        <table class="case-list-table">
+          <thead>
+            <tr>
+              <th>Case #</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Company</th>
+              <th>Tracking #</th>
+              <th>Notes</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="casesTbody">
+            <!-- Open cases will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Closed Cases Section -->
+    <div class="section" id="closeCasesSection">
+      <div class="case-list">
+        <div class="case-list-header">
+          <h2>Closed Cases</h2>
+          <div>Total Closed: <span id="totalClosedCases">0</span></div>
+        </div>
+        <table class="case-list-table">
+          <thead>
+            <tr>
+              <th>Case #</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Company</th>
+              <th>Tracking #</th>
+              <th>Notes</th>
+              <th>Closed On</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="closedCasesTbody">
+            <!-- Closed cases will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal-overlay" id="editModalOverlay">
+    <div class="edit-modal" id="editModal">
+      <button class="close-edit-modal" id="closeEditModalBtn">&times;</button>
+      <h2>Edit Case</h2>
+      <!-- Edit Fields -->
+      <div class="edit-form-row">
+        <label for="editCustomerName">Customer Name:</label>
+        <input type="text" id="editCustomerName" />
+      </div>
+      <div class="edit-form-row">
+        <label for="editPhoneNumber">Phone Number:</label>
+        <input type="text" id="editPhoneNumber" />
+      </div>
+      <div class="edit-form-row">
+        <label for="editShippingCompany">Company:</label>
+        <input type="text" id="editShippingCompany" />
+      </div>
+      <div class="edit-form-row">
+        <label for="editTrackingNumber">Tracking #:</label>
+        <input type="text" id="editTrackingNumber" />
+      </div>
+      <div class="edit-form-row">
+        <label for="editNotes">Notes:</label>
+        <textarea id="editNotes" rows="2"></textarea>
+      </div>
+
+      <!-- Updates Section -->
+      <div class="edit-updates-section">
+        <h3>Updates</h3>
+        <div class="edit-updates-list" id="editUpdatesList"></div>
+        <div class="add-update-row">
+          <input type="text" id="newUpdateText" placeholder="Add new update..." />
+          <button class="add-update-btn" id="addUpdateBtn">Add Update</button>
+        </div>
+      </div>
+
+      <!-- Checkbox to close the case -->
+      <div class="edit-close-checkbox">
+        <input type="checkbox" id="closeCaseCheckbox" />
+        <label for="closeCaseCheckbox">Close this case</label>
+      </div>
+
+      <!-- Action Buttons -->
+      <button class="save-changes-btn" id="saveEditBtn">Save Changes</button>
+      <button class="cancel-changes-btn" id="cancelEditBtn">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    /****************************
+     * THEME TOGGLE
+     ****************************/
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-theme');
+      themeToggle.checked = true;
+    }
+    themeToggle.addEventListener('change', () => {
+      if (themeToggle.checked) {
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme','dark');
+      } else {
+        body.classList.remove('dark-theme');
+        localStorage.setItem('theme','light');
+      }
+    });
+
+    /****************************
+     * CASES DATA
+     ****************************/
+    let cases = [];          // Active cases
+    let closedCases = [];    // Closed cases
+    let originalCase = null; // Reference for editing
+    let editCaseData = null; // Editable copy
+
+    /****************************
+     * DOM ELEMENTS
+     ****************************/
+    const openCasesSection = document.getElementById('openCasesSection');
+    const closeCasesSection = document.getElementById('closeCasesSection');
+    const openCasesBtn = document.getElementById('openCasesBtn');
+    const closeCasesBtn = document.getElementById('closeCasesBtn');
+
+    const customerNameInput = document.getElementById('customerName');
+    const phoneNumberInput = document.getElementById('phoneNumber');
+    const shippingCompanyInput = document.getElementById('shippingCompany');
+    const trackingNumberInput = document.getElementById('trackingNumber');
+    const notesInput = document.getElementById('notes');
+    const addCaseBtn = document.getElementById('addCaseBtn');
+
+    const casesTbody = document.getElementById('casesTbody');
+    const totalCasesSpan = document.getElementById('totalCases');
+
+    const closedCasesTbody = document.getElementById('closedCasesTbody');
+    const totalClosedCasesSpan = document.getElementById('totalClosedCases');
+
+    // Edit Modal elements
+    const editModalOverlay = document.getElementById('editModalOverlay');
+    const editModal = document.getElementById('editModal');
+    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const closeCaseCheckbox = document.getElementById('closeCaseCheckbox');
+
+    // Edit Fields
+    const editCustomerName = document.getElementById('editCustomerName');
+    const editPhoneNumber = document.getElementById('editPhoneNumber');
+    const editShippingCompany = document.getElementById('editShippingCompany');
+    const editTrackingNumber = document.getElementById('editTrackingNumber');
+    const editNotes = document.getElementById('editNotes');
+
+    // Edit Updates elements
+    const editUpdatesList = document.getElementById('editUpdatesList');
+    const newUpdateText = document.getElementById('newUpdateText');
+    const addUpdateBtn = document.getElementById('addUpdateBtn');
+
+    /****************************
+     * NAVIGATION
+     ****************************/
+    openCasesBtn.addEventListener('click', () => {
+      openCasesSection.classList.add('active');
+      closeCasesSection.classList.remove('active');
+    });
+    closeCasesBtn.addEventListener('click', () => {
+      closeCasesSection.classList.add('active');
+      openCasesSection.classList.remove('active');
+      renderClosedCases();
+    });
+
+    /****************************
+     * UTILITIES
+     ****************************/
+    function getDaysDifference(openDate) {
+      const now = new Date();
+      return Math.floor((now - openDate) / (1000 * 60 * 60 * 24));
+    }
+    function getStatusClass(openDate) {
+      const days = getDaysDifference(openDate);
+      if (days > 4) return 'status-red';
+      if (days > 2) return 'status-orange';
+      return 'status-green';
+    }
+
+    /****************************
+     * ADD CASE
+     ****************************/
+    addCaseBtn.addEventListener('click', () => {
+      const nameVal = customerNameInput.value.trim();
+      const phoneVal = phoneNumberInput.value.trim();
+      const companyVal = shippingCompanyInput.value.trim();
+      const trackVal = trackingNumberInput.value.trim();
+      const notesVal = notesInput.value.trim();
+
+      if (!nameVal || !phoneVal || !companyVal || !trackVal) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      const newCase = {
+        id: Date.now(),
+        dateOpened: new Date(),
+        customerName: nameVal,
+        phoneNumber: phoneVal,
+        shippingCompany: companyVal,
+        trackingNumber: trackVal,
+        notes: notesVal,
+        updates: []
+      };
+
+      cases.push(newCase);
+      renderOpenCases();
+
+      // Clear form fields
+      customerNameInput.value = '';
+      phoneNumberInput.value = '';
+      shippingCompanyInput.value = '';
+      trackingNumberInput.value = '';
+      notesInput.value = '';
+    });
+
+    /****************************
+     * RENDER OPEN CASES
+     ****************************/
+    function renderOpenCases() {
+      casesTbody.innerHTML = '';
+      cases.forEach((c, index) => {
+        const row = document.createElement('tr');
+
+        // Case #
+        const caseNumberCell = document.createElement('td');
+        caseNumberCell.textContent = index + 1;
+        row.appendChild(caseNumberCell);
+
+        // Customer
+        const customerCell = document.createElement('td');
+        customerCell.textContent = c.customerName;
+        row.appendChild(customerCell);
+
+        // Phone
+        const phoneCell = document.createElement('td');
+        phoneCell.textContent = c.phoneNumber;
+        row.appendChild(phoneCell);
+
+        // Company
+        const companyCell = document.createElement('td');
+        companyCell.textContent = c.shippingCompany;
+        row.appendChild(companyCell);
+
+        // Tracking link
+        const trackingCell = document.createElement('td');
+        const trackLink = document.createElement('a');
+        trackLink.href = 'https://www.google.com/search?q=' + encodeURIComponent(c.trackingNumber + ' tracking');
+        trackLink.target = '_blank';
+        trackLink.textContent = c.trackingNumber;
+        trackLink.style.color = 'var(--accent-color)';
+        trackLink.style.textDecoration = 'underline';
+        trackingCell.appendChild(trackLink);
+        row.appendChild(trackingCell);
+
+        // Notes
+        const notesCell = document.createElement('td');
+        notesCell.textContent = c.notes;
+        row.appendChild(notesCell);
+
+        // Status
+        const statusCell = document.createElement('td');
+        const statusSpan = document.createElement('span');
+        statusSpan.classList.add('status-indicator', getStatusClass(c.dateOpened));
+        statusSpan.textContent = '●';
+        statusCell.appendChild(statusSpan);
+        row.appendChild(statusCell);
+
+        // Actions
+        const actionsCell = document.createElement('td');
+
+        // Updates button container
+        const viewContainer = document.createElement('div');
+        viewContainer.classList.add('view-btn-container');
+
+        // "Updates" button
+        const viewBtn = document.createElement('button');
+        viewBtn.classList.add('btn', 'btn-view');
+        viewBtn.textContent = 'Updates';
+
+        // Popup for updates
+        const updatesPopup = document.createElement('div');
+        updatesPopup.classList.add('updates-popup');
+        const popupTitle = document.createElement('h4');
+        popupTitle.textContent = 'Case Updates';
+        updatesPopup.appendChild(popupTitle);
+        
+        // Close button inside popup
+        const popupCloseBtn = document.createElement('button');
+        popupCloseBtn.classList.add('popup-close-btn');
+        popupCloseBtn.textContent = '×';
+        popupCloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          updatesPopup.classList.remove('show');
+        });
+        updatesPopup.appendChild(popupCloseBtn);
+
+        if (c.updates.length === 0) {
+          const noUpdatesP = document.createElement('p');
+          noUpdatesP.textContent = 'No updates yet.';
+          updatesPopup.appendChild(noUpdatesP);
+        } else {
+          c.updates.forEach(up => {
+            const p = document.createElement('p');
+            p.textContent = `[${new Date(up.date).toLocaleString()}] ${up.text}`;
+            updatesPopup.appendChild(p);
+          });
+        }
+
+        viewBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          updatesPopup.classList.toggle('show');
+        });
+        viewContainer.appendChild(viewBtn);
+        viewContainer.appendChild(updatesPopup);
+        actionsCell.appendChild(viewContainer);
+
+        // Edit button (the only action button)
+        const editBtn = document.createElement('button');
+        editBtn.classList.add('btn', 'btn-edit');
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => {
+          openEditModal(c);
+        });
+        actionsCell.appendChild(editBtn);
+
+        row.appendChild(actionsCell);
+        casesTbody.appendChild(row);
+      });
+      totalCasesSpan.textContent = cases.length;
+    }
+
+    /****************************
+     * RENDER CLOSED CASES
+     ****************************/
+    function renderClosedCases() {
+      closedCasesTbody.innerHTML = '';
+      closedCases.forEach((c, index) => {
+        const row = document.createElement('tr');
+        const caseNumberCell = document.createElement('td');
+        caseNumberCell.textContent = index + 1;
+        row.appendChild(caseNumberCell);
+
+        const customerCell = document.createElement('td');
+        customerCell.textContent = c.customerName;
+        row.appendChild(customerCell);
+
+        const phoneCell = document.createElement('td');
+        phoneCell.textContent = c.phoneNumber;
+        row.appendChild(phoneCell);
+
+        const companyCell = document.createElement('td');
+        companyCell.textContent = c.shippingCompany;
+        row.appendChild(companyCell);
+
+        const trackingCell = document.createElement('td');
+        trackingCell.textContent = c.trackingNumber;
+        row.appendChild(trackingCell);
+        
+        const notesCell = document.createElement('td');
+        notesCell.textContent = c.notes;
+        row.appendChild(notesCell);
+
+        const dateClosedCell = document.createElement('td');
+        dateClosedCell.textContent = new Date(c.dateClosed).toLocaleString();
+        row.appendChild(dateClosedCell);
+
+        const reasonCell = document.createElement('td');
+        reasonCell.textContent = c.closeReason;
+        row.appendChild(reasonCell);
+
+        closedCasesTbody.appendChild(row);
+      });
+      totalClosedCasesSpan.textContent = closedCases.length;
+    }
+
+    /****************************
+     * EDIT CASE MODAL
+     ****************************/
+    function openEditModal(caseObj) {
+      originalCase = caseObj;
+      editCaseData = JSON.parse(JSON.stringify(caseObj));
+      editCustomerName.value = editCaseData.customerName;
+      editPhoneNumber.value = editCaseData.phoneNumber;
+      editShippingCompany.value = editCaseData.shippingCompany;
+      editTrackingNumber.value = editCaseData.trackingNumber;
+      editNotes.value = editCaseData.notes || "";
+      // Reset close-case checkbox
+      closeCaseCheckbox.checked = false;
+      renderEditUpdates();
+      editModalOverlay.classList.add('show');
+    }
+
+    function renderEditUpdates() {
+      editUpdatesList.innerHTML = '';
+      if (!editCaseData.updates || editCaseData.updates.length === 0) {
+        const p = document.createElement('p');
+        p.textContent = 'No updates yet.';
+        editUpdatesList.appendChild(p);
+      } else {
+        editCaseData.updates.forEach(up => {
+          const p = document.createElement('p');
+          p.textContent = `[${new Date(up.date).toLocaleString()}] ${up.text}`;
+          editUpdatesList.appendChild(p);
+        });
+      }
+    }
+
+    addUpdateBtn.addEventListener('click', () => {
+      const textVal = newUpdateText.value.trim();
+      if (!textVal) return;
+      editCaseData.updates.push({
+        text: textVal,
+        date: new Date()
+      });
+      newUpdateText.value = '';
+      renderEditUpdates();
+    });
+
+    function closeEditModal() {
+      editModalOverlay.classList.remove('show');
+      editCaseData = null;
+      originalCase = null;
+    }
+    closeEditModalBtn.addEventListener('click', closeEditModal);
+    cancelEditBtn.addEventListener('click', closeEditModal);
+
+    // Save changes from edit modal; if close checkbox is checked, prompt for a reason and close the case.
+    saveEditBtn.addEventListener('click', () => {
+      if (!editCaseData || !originalCase) return;
+      originalCase.customerName = editCaseData.customerName.trim();
+      originalCase.phoneNumber = editCaseData.phoneNumber.trim();
+      originalCase.shippingCompany = editCaseData.shippingCompany.trim();
+      originalCase.trackingNumber = editCaseData.trackingNumber.trim();
+      originalCase.notes = editNotes.value.trim();
+      originalCase.updates = editCaseData.updates;
+      
+      if (closeCaseCheckbox.checked) {
+        const reason = prompt('Reason for closing this case?');
+        if (reason && reason.trim() !== '') {
+          originalCase.closeReason = reason;
+          originalCase.dateClosed = new Date();
+          closedCases.push(originalCase);
+          cases = cases.filter(item => item.id !== originalCase.id);
+        } else {
+          alert('You must provide a reason to close a case.');
+          return;
+        }
+      }
+      
+      renderOpenCases();
+      closeEditModal();
+    });
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
